@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"> <!-- Establece la codificación de caracteres a UTF-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Configura la página para ser responsiva -->
+  <title>Tienda Online</title> <!-- Título de la página -->
+  <style>
+    /* Estilos para la página */
+    body {
+      font-family: Arial, sans-serif; /* Fuente de texto */
+    }
+    table {
+      width: 100%; /* La tabla ocupará todo el ancho disponible */
+      border-collapse: collapse; /* Elimina espacios entre bordes */
+      margin-top: 20px; /* Margen superior */
+    }
+    th, td {
+      border: 1px solid #ddd; /* Bordes de las celdas */
+      padding: 8px; /* Espaciado dentro de las celdas */
+      text-align: left; /* Texto alineado a la izquierda */
+    }
+    th {
+      background-color: #f4f4f4; /* Fondo gris claro para los encabezados */
+    }
+  </style>
+</head>
+<body>
+  <h1>Lista de Productos</h1> <!-- Título principal -->
+  <button id="loadProducts">Cargar Productos</button> <!-- Botón para cargar productos -->
+  <table>
+    <thead>
+      <tr>
+        <!-- Encabezados de la tabla -->
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Categoría</th>
+      </tr>
+    </thead>
+    <tbody id="productList">
+      <!-- Aquí se insertarán las filas de productos dinámicamente -->
+    </tbody>
+  </table>
+
+  <script>
+    // URL de la API desde la que se obtendrán los productos
+    const apiURL = "https://fakestoreapi.com/products";
+
+    // Agrega un evento de clic al botón para cargar productos
+    document.getElementById("loadProducts").addEventListener("click", () => {
+      // Realiza una solicitud GET a la API
+      fetch(apiURL)
+        .then(response => {
+          // Verifica si la respuesta fue exitosa
+          if (!response.ok) {
+            throw new Error("Error al obtener los datos"); // Lanza un error si la respuesta no es válida
+          }
+          return response.json(); // Convierte la respuesta a formato JSON
+        })
+        .then(products => {
+          // Obtiene el elemento <tbody> donde se mostrarán los productos
+          const productList = document.getElementById("productList");
+          productList.innerHTML = ""; // Limpia el contenido existente
+
+          // Itera sobre cada producto recibido de la API
+          products.forEach(product => {
+            // Crea una nueva fila de la tabla
+            const row = document.createElement("tr");
+
+            // Define el contenido HTML de la fila con los datos del producto
+            row.innerHTML = `
+              <td>${product.id}</td> <!-- Muestra el ID del producto -->
+              <td>${product.title}</td> <!-- Muestra el título del producto -->
+              <td>${product.price.toFixed(2)} USD</td> <!-- Muestra el precio del producto con 2 decimales -->
+              <td>${product.category}</td> <!-- Muestra la categoría del producto -->
+            `;
+
+            // Agrega la fila al <tbody>
+            productList.appendChild(row);
+          });
+        })
+        .catch(error => {
+          // Captura y muestra cualquier error que ocurra durante la solicitud
+          console.error("Error:", error);
+        });
+    });
+  </script>
+</body>
+</html>
