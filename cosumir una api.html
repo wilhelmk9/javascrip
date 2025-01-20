@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumo de API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 1rem 0;
+        }
+        main {
+            padding: 2rem;
+        }
+        .product {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 200px;
+        }
+        .product img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .product h3 {
+            font-size: 1.2rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Productos</h1>
+    </header>
+    <main>
+        <div id="products-container">
+            <p>Cargando productos...</p>
+        </div>
+    </main>
+    <script>
+        const apiURL = 'https://fakestoreapi.com/products'; // URL de la API
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch(apiURL);
+                const products = await response.json();
+
+                const productsContainer = document.getElementById('products-container');
+                productsContainer.innerHTML = ''; // Limpiar contenido previo
+
+                products.forEach(product => {
+                    const productElement = document.createElement('div');
+                    productElement.className = 'product';
+
+                    productElement.innerHTML = `
+                        <img src="${product.image}" alt="${product.title}">
+                        <h3>${product.title}</h3>
+                        <p>$${product.price}</p>
+                    `;
+
+                    productsContainer.appendChild(productElement);
+                });
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
+                document.getElementById('products-container').innerHTML = '<p>Error al cargar los productos.</p>';
+            }
+        }
+
+        // Llamar a la función para cargar productos al cargar la página
+        fetchProducts();
+    </script>
+</body>
+</html>
