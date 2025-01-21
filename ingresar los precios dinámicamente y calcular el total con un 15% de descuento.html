@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Descuento</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .form-group {
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Calculadora de Total con Descuento</h1>
+  <p>Ingresa los precios de los productos y calcula el total con un 15% de descuento aplicado.</p>
+
+  <!-- Formulario para ingresar precios -->
+  <div class="form-group">
+    <label for="priceInput">Agregar precio:</label>
+    <input type="number" id="priceInput" placeholder="Ingresa un precio" min="0" />
+    <button id="addPriceButton">Agregar</button>
+  </div>
+
+  <!-- Lista de precios -->
+  <h2>Precios agregados:</h2>
+  <ul id="priceList"></ul>
+
+  <!-- Botón para calcular el total -->
+  <button id="calculateButton">Calcular Total con Descuento</button>
+
+  <!-- Resultado -->
+  <div id="result"></div>
+
+  <script>
+    // Variables para manejar precios
+    const prices = [];
+    const priceInput = document.getElementById("priceInput");
+    const priceList = document.getElementById("priceList");
+    const resultDiv = document.getElementById("result");
+
+    // Función para agregar precios a la lista
+    document.getElementById("addPriceButton").addEventListener("click", () => {
+      const price = parseFloat(priceInput.value);
+      if (!isNaN(price) && price >= 0) {
+        prices.push(price);
+
+        // Actualizar la lista de precios en el DOM
+        const listItem = document.createElement("li");
+        listItem.textContent = `$${price.toFixed(2)}`;
+        priceList.appendChild(listItem);
+
+        // Limpiar el campo de entrada
+        priceInput.value = "";
+      } else {
+        alert("Por favor, ingresa un precio válido.");
+      }
+    });
+
+    // Función para calcular el total con descuento
+    document.getElementById("calculateButton").addEventListener("click", () => {
+      if (prices.length === 0) {
+        resultDiv.textContent = "No se han agregado precios.";
+        return;
+      }
+
+      // Calcular el total y el descuento
+      const total = prices.reduce((acc, price) => acc + price, 0);
+      const discount = total * 0.15;
+      const totalWithDiscount = total - discount;
+
+      // Mostrar el resultado en el DOM
+      resultDiv.innerHTML = `
+        <strong>Total:</strong> $${total.toFixed(2)}<br>
+        <strong>Descuento (15%):</strong> $${discount.toFixed(2)}<br>
+        <strong>Total con descuento:</strong> $${totalWithDiscount.toFixed(2)}
+      `;
+    });
+  </script>
+</body>
+</html>
