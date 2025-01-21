@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Carrito</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+    .cart-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .cart-item span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Carrito de Compras</h1>
+  
+  <!-- Formulario para agregar productos -->
+  <form id="productForm">
+    <input type="text" id="productName" placeholder="Nombre del producto" required />
+    <input type="number" id="productPrice" placeholder="Precio del producto" required min="0" step="0.01" />
+    <button type="submit">Agregar al Carrito</button>
+  </form>
+
+  <!-- Contenedor para el carrito -->
+  <h2>Productos en el Carrito</h2>
+  <div id="cartContainer"></div>
+
+  <!-- Total del carrito -->
+  <h3>Total: $<span id="cartTotal">0.00</span></h3>
+
+  <script>
+    // Referencias a elementos del DOM
+    const productForm = document.getElementById("productForm");
+    const productNameInput = document.getElementById("productName");
+    const productPriceInput = document.getElementById("productPrice");
+    const cartContainer = document.getElementById("cartContainer");
+    const cartTotal = document.getElementById("cartTotal");
+
+    // Array para almacenar los productos del carrito
+    let cart = [];
+
+    // Función para actualizar el total del carrito
+    function updateCartTotal() {
+      const total = cart.reduce((sum, product) => sum + product.price, 0);
+      cartTotal.textContent = total.toFixed(2);
+    }
+
+    // Función para renderizar los productos en el carrito
+    function renderCart() {
+      cartContainer.innerHTML = ""; // Limpia el contenedor
+      cart.forEach((product, index) => {
+        const cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+        cartItem.innerHTML = `
+          <span>${product.name} - $${product.price.toFixed(2)}</span>
+          <button onclick="removeProduct(${index})">Eliminar</button>
+        `;
+        cartContainer.appendChild(cartItem); // Agrega el producto al contenedor
+      });
+    }
+
+    // Función para eliminar un producto del carrito
+    function removeProduct(index) {
+      cart.splice(index, 1); // Elimina el producto del array
+      renderCart(); // Actualiza la lista
+      updateCartTotal(); // Actualiza el total
+    }
+
+    // Evento para agregar un producto al carrito
+    productForm.addEventListener("submit", (event) => {
+      event.preventDefault(); // Evita que se recargue la página
+      const productName = productNameInput.value.trim();
+      const productPrice = parseFloat(productPriceInput.value);
+
+      // Verifica que los datos sean válidos
+      if (productName && !isNaN(productPrice)) {
+        // Agrega el producto al carrito
+        cart.push({ name: productName, price: productPrice });
+
+        // Limpia los campos del formulario
+        productNameInput.value = "";
+        productPriceInput.value = "";
+
+        // Actualiza el carrito y el total
+        renderCart();
+        updateCartTotal();
+      }
+    });
+  </script>
+</body>
+</html>
