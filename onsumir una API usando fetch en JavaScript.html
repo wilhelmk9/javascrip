@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consumo de API</title>
+  <style>
+    .product {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .product img {
+      max-width: 100px;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .product h3 {
+      margin: 0 0 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Productos desde la API</h1>
+  <button id="fetchProducts">Cargar Productos</button> <!-- Botón para cargar los productos -->
+  <div id="productContainer"></div> <!-- Contenedor para los productos -->
+
+  <script>
+    // URL de la API pública
+    const apiURL = "https://fakestoreapi.com/products";
+
+    // Referencia al botón y al contenedor
+    const fetchProductsButton = document.getElementById("fetchProducts");
+    const productContainer = document.getElementById("productContainer");
+
+    // Función para obtener los productos desde la API
+    async function fetchProducts() {
+      try {
+        // Realiza la solicitud GET a la API
+        const response = await fetch(apiURL);
+
+        // Verifica si la respuesta fue exitosa
+        if (!response.ok) {
+          throw new Error("Error al obtener los productos");
+        }
+
+        // Convierte la respuesta en un JSON
+        const products = await response.json();
+
+        // Llama a la función para mostrar los productos
+        displayProducts(products);
+      } catch (error) {
+        console.error("Error:", error); // Muestra el error en la consola
+      }
+    }
+
+    // Función para mostrar los productos en la página
+    function displayProducts(products) {
+      productContainer.innerHTML = ""; // Limpia el contenedor antes de agregar nuevos productos
+      products.forEach(product => {
+        // Crea un div para cada producto
+        const productDiv = document.createElement("div");
+        productDiv.classList.add("product");
+
+        // Inserta el contenido del producto en el div
+        productDiv.innerHTML = `
+          <img src="${product.image}" alt="${product.title}" /> <!-- Imagen del producto -->
+          <h3>${product.title}</h3> <!-- Nombre del producto -->
+          <p><strong>Precio:</strong> $${product.price.toFixed(2)}</p> <!-- Precio del producto -->
+          <p><strong>Categoría:</strong> ${product.category}</p> <!-- Categoría del producto -->
+        `;
+
+        // Agrega el div al contenedor principal
+        productContainer.appendChild(productDiv);
+      });
+    }
+
+    // Asocia el evento de clic al botón
+    fetchProductsButton.addEventListener("click", fetchProducts);
+  </script>
+</body>
+</html>
